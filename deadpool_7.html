@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>The Deadpool</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#08080c;--bg2:#0e0e14;--sf:#13131b;--sfh:#1a1a25;
+  --ink:#fff;--ink2:#e0dfe6;--inks:#a8a5b5;--muted:#66647a;--line:#1e1e2e;
+  --pink:#ff1f71;--cyan:#00f0ff;--purple:#a855f7;--gold:#fbbf24;
+  --gp:rgba(255,31,113,.45);--gc:rgba(0,240,255,.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;line-height:1.5}
+#bgC{position:fixed;inset:0;z-index:0;pointer-events:none}
+.shell{position:relative;z-index:1;max-width:1300px;margin:0 auto;padding:1.25rem 1.5rem 5rem}
+
+/* header */
+.hdr{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;padding:1.1rem 0;margin-bottom:0;border-bottom:1px solid var(--line);position:relative}
+.hdr::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--pink),var(--cyan),transparent);opacity:.35}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.5rem;letter-spacing:-.03em;text-transform:uppercase;background:linear-gradient(135deg,var(--pink),var(--cyan));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 8px var(--gp));line-height:1}
+.hdr-tag{font-size:.75rem;color:var(--muted);font-weight:300;border-left:1px solid var(--line);padding-left:1rem;max-width:260px;line-height:1.3}
+.hdr-right{display:flex;gap:.5rem;flex-wrap:wrap}
+.chip{padding:.3rem .7rem;background:var(--sf);border:1px solid var(--line);border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2);display:flex;align-items:center;gap:.3rem}
+.chip b{font-weight:600}
+.chip-r b{color:var(--pink)}.chip-d b{color:var(--cyan)}.chip-c b{color:var(--purple)}
+
+/* howto */
+.howto{background:var(--sf);border:1px solid var(--line);border-radius:14px;padding:1.1rem 1.4rem;margin:1.25rem 0;position:relative;overflow:hidden}
+.howto::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),var(--pink),transparent);opacity:.3}
+.howto-tog{display:flex;align-items:center;justify-content:space-between;cursor:pointer;-webkit-user-select:none;user-select:none}
+.howto-t{font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;display:flex;align-items:center;gap:.5rem}
+.howto-t .ic{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--purple));font-size:.65rem;color:white;font-weight:800}
+.howto-arr{font-size:.7rem;color:var(--muted);transition:transform .3s}
+.howto.open .howto-arr{transform:rotate(180deg)}
+.howto-bd{max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s;padding-top:0}
+.howto.open .howto-bd{max-height:700px;padding-top:1.1rem}
+.howto-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.85rem}
+.howto-s{background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:1rem;position:relative;transition:border-color .25s}
+.howto-s:hover{border-color:var(--pink)}
+.howto-s .sn{position:absolute;top:.6rem;right:.7rem;font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;color:var(--line);line-height:1}
+.howto-s h4{font-family:'Syne',sans-serif;font-weight:700;font-size:.82rem;margin-bottom:.35rem;display:flex;align-items:center;gap:.35rem}
+.howto-s h4 .d{color:var(--pink);font-size:.55rem}
+.howto-s p{font-size:.78rem;color:var(--ink2);font-weight:300;line-height:1.4}
+.howto-s p b{color:var(--ink);font-weight:600}
+.howto-ft{margin-top:.85rem;padding-top:.7rem;border-top:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--ink2);letter-spacing:.1em;line-height:1.5}
+.howto-ft b{color:var(--gold);font-weight:500}
+
+/* player bar */
+.pbar{
+  display:flex;flex-direction:column;gap:1rem;
+  padding:1.25rem 1.4rem;margin-bottom:1.25rem;
+  background:var(--sf);border:1px solid var(--line);border-radius:14px;
+  position:relative;overflow:hidden;
+}
+.pbar::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--pink),var(--cyan),transparent);opacity:.3}
+
+.pbar-top{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.pbar-who{display:flex;flex-direction:column;gap:.4rem;flex:1}
+.pbar-who-label{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--ink2);letter-spacing:.2em;text-transform:uppercase;font-weight:500}
+.pbar-who-hint{font-size:.75rem;color:var(--inks);font-weight:300}
+.pbar-sel{
+  background:var(--bg2);border:1px solid var(--line);color:var(--ink);
+  padding:.65rem 2.5rem .65rem 1rem;font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;
+  border-radius:10px;cursor:pointer;appearance:none;width:100%;max-width:280px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath fill='%23aaa' d='M5 6 0 0h10z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right .85rem center;
+  transition:border-color .2s;letter-spacing:-.01em;
+}
+.pbar-sel:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 10px var(--gc)}
+
+.pbar-c{text-align:right}
+.coins-n{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;line-height:1;background:linear-gradient(135deg,var(--gold),var(--pink));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 6px rgba(251,191,36,.2))}
+.coins-l{font-family:'JetBrains Mono',monospace;font-size:.52rem;color:var(--muted);letter-spacing:.25em;text-transform:uppercase;margin-top:.2rem}
+
+.pbar-active{
+  display:flex;align-items:center;gap:.75rem;
+  padding:.65rem 1rem;background:var(--bg2);border:1px solid var(--line);border-radius:10px;
+  min-height:48px;
+}
+.pbar-active-av{width:36px;height:36px;border-radius:8px;overflow:hidden;border:1px solid var(--line);flex-shrink:0}
+.pbar-active-av img{width:100%;height:100%;object-fit:cover}
+.pbar-active-name{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--ink)}
+.pbar-active-msg{font-size:.72rem;color:var(--cyan);font-weight:500}
+.pbar-active-none{font-size:.88rem;color:var(--inks);font-style:italic}
+
+.pbar-bottom{display:flex;align-items:center;gap:.85rem;padding-top:.75rem;border-top:1px solid var(--line)}
+.pbar-bottom-label{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--inks);letter-spacing:.15em;text-transform:uppercase}
+.pbtn{background:transparent;border:1px solid var(--line);color:var(--ink2);padding:.5rem .85rem;font-family:'Outfit',sans-serif;font-weight:600;font-size:.78rem;border-radius:8px;cursor:pointer;transition:all .2s}
+.pbtn:hover{border-color:var(--cyan);color:var(--ink);box-shadow:0 0 10px var(--gc)}
+
+/* nav */
+.nav{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:2rem;padding:.35rem;background:var(--sf);border-radius:14px;border:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav-b{
+  background:var(--bg2);border:1px solid var(--line);color:var(--inks);
+  padding:.85rem .6rem;font-family:'Outfit',sans-serif;font-weight:700;font-size:.88rem;
+  cursor:pointer;border-radius:10px;transition:all .25s;white-space:nowrap;
+  display:flex;flex-direction:column;align-items:center;gap:.3rem;text-align:center;
+  position:relative;
+}
+.nav-b .nav-icon{font-size:1.1rem;line-height:1}
+.nav-b .nav-label{font-size:.72rem;font-weight:600;letter-spacing:.02em}
+.nav-b:hover{color:var(--ink);border-color:var(--pink);background:var(--sfh);transform:translateY(-1px)}
+.nav-b.active{
+  background:linear-gradient(135deg,var(--pink),var(--purple));color:white;
+  border-color:transparent;box-shadow:0 4px 20px var(--gp);transform:translateY(-1px);
+}
+.nav-b.active .nav-icon{filter:drop-shadow(0 0 4px rgba(255,255,255,.4))}
+@media(max-width:640px){
+  .nav{grid-template-columns:repeat(2,1fr);gap:.35rem}
+  .nav-b{padding:.7rem .5rem}
+  .nav-b .nav-label{font-size:.65rem}
+}
+
+.view{display:none}.view.active{display:block;animation:vIn .4s ease-out}
+@keyframes vIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== REGISTER TABLE ===== */
+.rtbl{width:100%;border-collapse:separate;border-spacing:0;background:var(--sf);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.rtbl thead th{font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);padding:.85rem 1rem;text-align:left;border-bottom:1px solid var(--line);background:var(--bg2);position:sticky;top:0;z-index:5}
+.rtbl thead th:first-child{width:50px;text-align:center}
+.rtbl tbody tr{cursor:pointer;transition:background .2s}
+.rtbl tbody tr:hover{background:var(--sfh)}
+.rtbl tbody tr:not(:last-child) td{border-bottom:1px solid var(--line)}
+.rtbl td{padding:.75rem 1rem;vertical-align:middle}
+.rank-c{text-align:center}
+.rank-b{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--pink),var(--purple));font-family:'Syne',sans-serif;font-weight:800;font-size:.8rem;color:white;box-shadow:0 2px 8px var(--gp)}
+.name-c{display:flex;align-items:center;gap:.75rem}
+.av{width:40px;height:40px;border-radius:10px;overflow:hidden;border:1px solid var(--line);flex-shrink:0;transition:border-color .3s}
+.rtbl tbody tr:hover .av{border-color:var(--pink);box-shadow:0 0 8px var(--gp)}
+.av img{width:100%;height:100%;object-fit:cover;filter:brightness(.95) contrast(1.05)}
+.nm-t{min-width:0}
+.nm-p{font-family:'Syne',sans-serif;font-weight:700;font-size:.92rem;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nm-n{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--pink);letter-spacing:.06em;margin-top:.1rem;cursor:pointer;display:flex;align-items:center;gap:.3rem}
+.nm-n:hover{color:var(--cyan)}
+.nm-q{font-style:italic;font-weight:300;font-size:.72rem;color:var(--muted);margin-top:.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+.dt-c{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--inks);letter-spacing:.04em}
+.dt-c .avg-label{font-size:.55rem;color:var(--muted);display:block;margin-top:.15rem;letter-spacing:.15em;text-transform:uppercase}
+.cs-c{font-style:italic;font-weight:300;font-size:.82rem;color:var(--ink2);max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bt-c{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--muted);text-align:center}
+.pt-c{font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;color:var(--gold);text-align:right}
+.ac-c{text-align:right;white-space:nowrap}
+.ac-c button{background:transparent;border:1px solid var(--line);color:var(--inks);padding:.35rem .65rem;font-family:'Outfit',sans-serif;font-weight:600;font-size:.68rem;border-radius:7px;cursor:pointer;transition:all .2s;margin-left:.25rem}
+.ac-c button:hover{border-color:var(--pink);color:var(--ink);box-shadow:0 0 8px var(--gp)}
+.ac-c .bet-b{background:linear-gradient(135deg,var(--pink),var(--purple));border:none;color:white;box-shadow:0 2px 8px var(--gp)}
+.ac-c .bet-b:hover{box-shadow:0 4px 14px var(--gp);transform:translateY(-1px)}
+.vt-c{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--muted);text-align:center}
+
+@media(max-width:900px){
+  .rtbl thead{display:none}
+  .rtbl,.rtbl tbody,.rtbl tr,.rtbl td{display:block;width:100%}
+  .rtbl tbody tr{padding:1.1rem;border-bottom:1px solid var(--line);display:grid;grid-template-columns:auto 1fr;gap:.4rem .85rem;align-items:center}
+  .rank-c{grid-row:1/3}.name-c{grid-column:2}.cs-c{grid-column:1/-1;white-space:normal;max-width:none;padding:.4rem 0 0}.dt-c,.bt-c,.pt-c,.vt-c{display:inline;font-size:.68rem;padding:0}.ac-c{grid-column:1/-1;text-align:left;padding:.6rem 0 0}
+}
+
+/* ===== MY PROFILE FORM ===== */
+.prof-card{max-width:620px;background:var(--sf);border:1px solid var(--line);border-radius:16px;padding:2rem;position:relative;overflow:hidden}
+.prof-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--pink),var(--cyan));opacity:.4}
+.prof-title{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;letter-spacing:-.03em;margin-bottom:.2rem}
+.prof-sub{color:var(--ink2);font-weight:400;margin-bottom:1.75rem;padding-bottom:.85rem;border-bottom:1px solid var(--line);font-size:.92rem}
+.fr{margin-bottom:1.3rem}
+.fr label{display:block;font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink2);margin-bottom:.45rem;font-weight:500}
+.fr label .h{color:var(--cyan);letter-spacing:.05em;text-transform:none;font-style:italic;margin-left:.3rem;font-size:.58rem}
+.fr input,.fr textarea{width:100%;background:var(--bg2);border:1px solid var(--line);color:var(--ink);padding:.7rem .9rem;font-family:'Outfit',sans-serif;font-size:.92rem;border-radius:9px;transition:border-color .2s,box-shadow .2s}
+.fr input::placeholder,.fr textarea::placeholder{color:var(--inks);opacity:1}
+.fr input:focus,.fr textarea:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 10px var(--gc)}
+.fr textarea{resize:vertical;min-height:65px}
+.fr.split{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+
+/* ===== MY PREDICTIONS ===== */
+.pred-card{max-width:700px;background:var(--sf);border:1px solid var(--line);border-radius:16px;padding:2rem;position:relative;overflow:hidden;margin-top:2rem}
+.pred-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--purple),var(--pink));opacity:.4}
+.pred-title{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;letter-spacing:-.03em;margin-bottom:.2rem}
+.pred-sub{color:var(--ink2);font-weight:400;margin-bottom:1.5rem;padding-bottom:.85rem;border-bottom:1px solid var(--line);font-size:.92rem}
+
+.pred-row{display:grid;grid-template-columns:40px 44px 1fr 100px 50px;gap:.85rem;align-items:center;padding:.85rem .5rem;border-bottom:1px solid var(--line);transition:background .2s}
+.pred-row:last-child{border-bottom:none}
+.pred-row:hover{background:var(--sfh);border-radius:8px}
+.pred-rank-input{
+  width:40px;background:var(--bg2);border:1px solid var(--line);color:var(--ink);
+  padding:.4rem 0;text-align:center;font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;
+  border-radius:8px;transition:border-color .2s;
+}
+.pred-rank-input::placeholder{color:var(--inks);opacity:1}
+.pred-rank-input:focus{outline:none;border-color:var(--pink);box-shadow:0 0 8px var(--gp)}
+.pred-av{width:40px;height:40px;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+.pred-av img{width:100%;height:100%;object-fit:cover}
+.pred-name{font-family:'Syne',sans-serif;font-weight:700;font-size:.92rem;color:var(--ink)}
+.pred-date-input{
+  width:100%;background:var(--bg2);border:1px solid var(--line);color:var(--ink);
+  padding:.4rem .5rem;font-family:'JetBrains Mono',monospace;font-size:.75rem;
+  border-radius:8px;transition:border-color .2s;
+}
+.pred-date-input::placeholder{color:var(--inks);opacity:1}
+.pred-date-input:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 8px var(--gc)}
+.pred-status{font-size:.7rem;text-align:center}
+.pred-status .saved{color:var(--cyan)}
+.pred-status .unsaved{color:var(--inks)}
+
+.pred-foot{display:flex;align-items:center;justify-content:space-between;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--line);gap:.75rem;flex-wrap:wrap}
+.pred-foot-info{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--ink2);letter-spacing:.1em}
+.pred-foot-info b{color:var(--gold);font-weight:500}
+
+/* ===== BTN ===== */
+.btn{padding:.65rem 1rem;border:1px solid var(--line);background:transparent;color:var(--ink);font-family:'Outfit',sans-serif;font-weight:600;font-size:.8rem;cursor:pointer;border-radius:10px;transition:all .2s}
+.btn:hover{border-color:var(--cyan);box-shadow:0 0 12px var(--gc);transform:translateY(-1px)}
+.btn-glow{background:linear-gradient(135deg,var(--pink),var(--purple));border:none;color:white;box-shadow:0 4px 16px var(--gp)}
+.btn-glow:hover{box-shadow:0 6px 22px var(--gp);transform:translateY(-2px);border-color:transparent}
+
+/* leaderboard */
+.lb-r{display:grid;grid-template-columns:50px 1fr auto;gap:1rem;align-items:center;padding:1.15rem 0;border-bottom:1px solid var(--line)}
+.lb-r:hover{background:var(--sf);border-radius:8px;padding-left:.6rem;padding-right:.6rem;margin:0 -.6rem}
+.lb-rk{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--muted);line-height:1;letter-spacing:-.04em}
+.lb-r:nth-child(1) .lb-rk{color:var(--gold);text-shadow:0 0 10px rgba(251,191,36,.3)}
+.lb-r:nth-child(2) .lb-rk{color:#c0c0c0}
+.lb-r:nth-child(3) .lb-rk{color:#cd7f32}
+.lb-nm{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700}
+.lb-tg{font-weight:300;color:var(--muted);font-size:.8rem;margin-left:.4rem;font-style:italic}
+.lb-st{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:.15rem}
+.lb-co{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;color:var(--gold)}
+
+/* rules */
+.rules{max-width:660px}
+.rules-l{font-size:1.1rem;font-weight:300;color:var(--ink);line-height:1.5;margin-bottom:1.75rem;padding-bottom:1rem;border-bottom:1px solid var(--line)}
+.rules h3{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;color:var(--cyan);margin-top:1.5rem;margin-bottom:.4rem}
+.rules p,.rules li{color:var(--ink2);font-weight:300;font-size:.9rem;line-height:1.55;margin-bottom:.4rem}
+.rules strong{color:var(--ink);font-weight:700}
+.rules ul{padding-left:1.3rem}
+
+/* modals */
+.mo{position:fixed;inset:0;background:rgba(8,8,12,.92);backdrop-filter:blur(14px);display:none;align-items:center;justify-content:center;z-index:300;padding:1rem}
+.mo.active{display:flex;animation:fadeIn .2s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:var(--sf);border:1px solid var(--line);border-radius:16px;max-width:500px;width:100%;padding:2rem;max-height:90vh;overflow-y:auto;position:relative}
+.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--pink),var(--cyan));border-radius:16px 16px 0 0;opacity:.4}
+.modal-ey{font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--pink);letter-spacing:.3em;text-transform:uppercase;margin-bottom:.5rem;font-weight:500}
+.modal-t{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;letter-spacing:-.03em;margin-bottom:.2rem}
+.modal-s{color:var(--ink2);font-weight:400;margin-bottom:1.5rem;padding-bottom:.85rem;border-bottom:1px solid var(--line);font-size:.92rem}
+.modal-a{display:flex;gap:.5rem;margin-top:1.25rem}
+
+.bet-types{display:grid;gap:0}
+.bet-type{background:transparent;border:none;border-bottom:1px solid var(--line);padding:.9rem .4rem;cursor:pointer;text-align:left;color:var(--ink);transition:all .2s;display:flex;justify-content:space-between;align-items:center;gap:.85rem;border-radius:0}
+.bet-type:hover{background:var(--sfh);padding-left:.6rem}
+.bet-type.selected{background:rgba(255,31,113,.08);border-color:var(--pink)}
+.bet-type-text strong{font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;display:block;margin-bottom:.1rem}
+.bet-type-text small{color:var(--muted);font-size:.78rem;font-weight:300}
+.bet-type-mult{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,var(--gold),var(--pink));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.bi{display:none;margin-top:.85rem}.bi.active{display:block}
+.bi label,.sb label{display:block;font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem}
+.bi input,.bi textarea,.sb input{width:100%;background:var(--bg2);border:1px solid var(--line);color:var(--ink);padding:.7rem .9rem;font-family:'Outfit',sans-serif;font-size:.92rem;border-radius:9px}
+.bi input:focus,.bi textarea:focus,.sb input:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 10px var(--gc)}
+.sb{margin-top:1.1rem;padding-top:1.1rem;border-top:1px solid var(--line)}
+
+/* nickname modal */
+.nick-list{display:grid;gap:.35rem;margin:.85rem 0}
+.nick-opt{display:flex;justify-content:space-between;align-items:center;padding:.55rem .75rem;background:var(--bg2);border:1px solid var(--line);border-radius:9px;cursor:pointer;transition:all .2s}
+.nick-opt:hover{border-color:var(--pink)}
+.nick-opt.chosen{border-color:var(--cyan);box-shadow:0 0 8px var(--gc)}
+.nick-opt-nm{font-weight:600;font-size:.9rem}
+.nick-opt-by{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--muted)}
+.nick-add{display:flex;gap:.4rem;margin-top:.6rem}
+.nick-add input{flex:1;background:var(--bg2);border:1px solid var(--line);color:var(--ink);padding:.55rem .75rem;font-family:'Outfit',sans-serif;font-size:.85rem;border-radius:9px}
+.nick-add input:focus{outline:none;border-color:var(--cyan)}
+
+.empty{text-align:center;padding:3.5rem 2rem;color:var(--muted);font-weight:300;font-size:1rem}
+footer{margin-top:3.5rem;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;padding-top:1.25rem}
+footer::before{content:'';display:block;height:1px;background:linear-gradient(90deg,transparent,var(--pink),var(--cyan),transparent);opacity:.2;margin-bottom:1.25rem}
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(120px);background:linear-gradient(135deg,var(--pink),var(--purple));color:white;padding:.75rem 1.3rem;font-weight:600;font-size:.82rem;z-index:400;transition:transform .3s cubic-bezier(.2,.8,.2,1);border-radius:11px;box-shadow:0 8px 30px var(--gp);max-width:calc(100% - 2rem);text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+@media(max-width:640px){
+  .shell{padding:1rem .85rem 4rem}
+  .hdr-tag{display:none}.hdr-right{display:none}
+  .pbar{padding:.85rem 1rem}.coins-n{font-size:1.25rem}
+  .modal,.prof-card,.pred-card{padding:1.4rem}
+  .pred-row{grid-template-columns:36px 36px 1fr 80px 36px;gap:.5rem}
+}
+</style>
+</head>
+<body>
+<canvas id="bgC"></canvas>
+<div class="shell">
+
+<header class="hdr">
+  <div style="display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap">
+    <div class="logo">The Deadpool</div>
+    <div class="hdr-tag">A morbidly affectionate wager between friends. We rank, we wait.</div>
+  </div>
+  <div class="hdr-right">
+    <div class="chip chip-r">Rank <b>3×</b></div>
+    <div class="chip chip-d">Date <b>5×</b></div>
+    <div class="chip chip-c">Cause <b>10×</b></div>
+  </div>
+</header>
+
+<div class="howto open" id="howto">
+  <div class="howto-tog" id="howtoTog">
+    <div class="howto-t"><span class="ic">?</span> How It Works</div>
+    <span class="howto-arr">▼</span>
+  </div>
+  <div class="howto-bd">
+    <div class="howto-steps">
+      <div class="howto-s"><div class="sn">01</div><h4><span class="d">●</span> Go to Update My Profile</h4><p>Tap <b>"Update My Profile"</b> in the menu below. That's where all your setup happens.</p></div>
+      <div class="howto-s"><div class="sn">02</div><h4><span class="d">●</span> Pick Your Name</h4><p>Select yourself from the <b>"Who Are You?"</b> dropdown. This sets who you're editing and betting as.</p></div>
+      <div class="howto-s"><div class="sn">03</div><h4><span class="d">●</span> Fill In Your Details & Rank Everyone</h4><p>Add your photo, bio, and <b>famous last words</b>. Then rank everyone 1–6 and predict their <b>departure year</b>. Save both.</p></div>
+      <div class="howto-s"><div class="sn">04</div><h4><span class="d">●</span> Place Bets</h4><p>Back on <b>The Register</b>, hit <b>Bet</b> on anyone. Choose Rank (3×), Date (5×), or Cause (10×). Stake your Reaper Coins.</p></div>
+    </div>
+    <div class="howto-ft">Data saves on this device. Each person takes a turn on <b>Update My Profile</b> to set up. Rankings update live as more people vote.</div>
+  </div>
+</div>
+
+<nav class="nav">
+  <button class="nav-b active" data-view="list"><span class="nav-icon">☠️</span><span class="nav-label">The Register</span></button>
+  <button class="nav-b" data-view="profile"><span class="nav-icon">✏️</span><span class="nav-label">Update My Profile</span></button>
+  <button class="nav-b" data-view="leaderboard"><span class="nav-icon">🏆</span><span class="nav-label">Standings</span></button>
+  <button class="nav-b" data-view="rules"><span class="nav-icon">📜</span><span class="nav-label">House Rules</span></button>
+</nav>
+
+<!-- REGISTER -->
+<section class="view active" id="view-list">
+  <table class="rtbl"><thead><tr>
+    <th>#</th><th>Candidate</th><th>Avg. Departure</th><th>Cause</th><th>Votes</th><th>Bets</th><th style="text-align:right">Pot</th><th></th>
+  </tr></thead><tbody id="regBody"></tbody></table>
+</section>
+
+<!-- PROFILE + PREDICTIONS -->
+<section class="view" id="view-profile">
+
+  <!-- WHO ARE YOU — lives here now -->
+  <div class="pbar" style="margin-bottom:1.5rem">
+    <div class="pbar-top">
+      <div class="pbar-who">
+        <div class="pbar-who-label">Step 1 — Who Are You?</div>
+        <select id="userSel" class="pbar-sel">
+          <option value="" disabled selected>— Select your name —</option>
+        </select>
+        <div class="pbar-active" id="pbarActive">
+          <div class="pbar-active-none">Pick your name above to start editing & betting</div>
+        </div>
+      </div>
+      <div class="pbar-c"><div class="coins-n" id="balance">—</div><div class="coins-l">Reaper Coins</div></div>
+    </div>
+    <div class="pbar-bottom">
+      <span class="pbar-bottom-label">Not on the list?</span>
+      <button class="pbtn" id="addPlayerBtn">+ Add New Player</button>
+    </div>
+  </div>
+
+  <!-- PROFILE FORM -->
+  <div class="prof-card">
+    <div class="prof-title">Step 2 — My Details</div>
+    <p class="prof-sub">This is how you appear on the register. Make it count.</p>
+    <div class="fr"><label>Display Name</label><input type="text" id="profName" autocomplete="off"/></div>
+
+    <!-- PHOTO SECTION -->
+    <div class="fr">
+      <label>Your Photo</label>
+      <div style="display:flex;gap:1.25rem;align-items:flex-start;flex-wrap:wrap">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:.6rem;flex-shrink:0">
+          <div id="photoPreview" style="width:100px;height:100px;border-radius:16px;overflow:hidden;border:2px solid var(--line);background:var(--bg2);transition:border-color .3s;position:relative;cursor:pointer" onclick="document.getElementById('photoFile').click()">
+            <img id="photoPreviewImg" src="" alt="Preview" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.display='none'"/>
+            <div id="photoOverlay" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);opacity:0;transition:opacity .2s;font-size:1.5rem;pointer-events:none">📷</div>
+          </div>
+          <div style="font-size:.65rem;color:var(--muted);text-align:center">Tap to change</div>
+        </div>
+        <div style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:.6rem">
+          <input type="file" id="photoFile" accept="image/*" capture="environment" style="display:none"/>
+          <input type="hidden" id="profPhoto"/>
+          <button type="button" class="btn" id="takePhotoBtn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.75rem" onclick="document.getElementById('photoFile').click()">
+            <span style="font-size:1.1rem">📸</span> Take Photo or Choose from Library
+          </button>
+          <button type="button" class="btn" id="removePhotoBtn" style="width:100%;padding:.6rem;font-size:.75rem;color:var(--inks)">
+            Remove Photo
+          </button>
+          <div style="font-size:.7rem;color:var(--ink2);line-height:1.4">
+            On mobile, this opens your <strong style="color:var(--cyan)">camera</strong> or <strong style="color:var(--cyan)">photo library</strong>. On desktop, it opens a file picker. Your photo is stored directly — no URL needed.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fr"><label>Short Bio <span class="h">one or two lines about yourself</span></label><textarea id="profBio" placeholder="Lives fast, eats slow. Once beat a swan in a staring contest."></textarea></div>
+    <div class="fr"><label>Famous Last Words <span class="h">your epitaph, your legacy</span></label><input type="text" id="profQuote" placeholder="Hold my beer and watch this..." autocomplete="off"/></div>
+    <button class="btn btn-glow" id="profSaveBtn" style="width:100%">Save Profile</button>
+  </div>
+
+  <!-- PREDICTIONS -->
+  <div class="pred-card">
+    <div class="pred-title">Step 3 — My Predictions</div>
+    <p class="pred-sub">Rank everyone 1–<span id="predCount">6</span> (1 = first to go) and predict the year. The group average sets the real ranking.</p>
+    <div id="predRows"></div>
+    <div class="pred-foot">
+      <div class="pred-foot-info">Your votes are combined with everyone else's. <b>More votes = more accurate ranking.</b></div>
+      <button class="btn btn-glow" id="predSaveBtn">Save Predictions</button>
+    </div>
+  </div>
+</section>
+
+<!-- LEADERBOARD -->
+<section class="view" id="view-leaderboard"><div id="lbList"></div></section>
+
+<!-- RULES -->
+<section class="view" id="view-rules">
+  <div class="rules">
+    <p class="rules-l">A parlour game. Nobody is dying on a schedule. The point is to make each other laugh, predict cleverly, and crown a champion at season's end.</p>
+    <h3>The Currency</h3><p>Every member begins with <strong>1,000 Reaper Coins</strong>. Fictitious. They exist to keep score.</p>
+    <h3>The Rankings</h3><p>Every player ranks every candidate 1–N and predicts a departure year. The <strong>group average</strong> of these ranks determines the official death order. More participants = more accurate.</p>
+    <h3>The Three Wagers</h3>
+    <ul>
+      <li><strong>Rank · 3×</strong> — Bet on final position.</li>
+      <li><strong>Date · 5×</strong> — Bet on departure year.</li>
+      <li><strong>Cause · 10×</strong> — Bet on manner. Group votes to settle.</li>
+    </ul>
+    <h3>Settlement</h3><p>Bets settle at season's end. Closest forecaster takes the pot.</p>
+    <h3>Conduct</h3><p>Keep causes funny, not cruel. If someone actually passes, retire their entry with respect.</p>
+  </div>
+</section>
+
+<footer>The Deadpool · A Friendly Wager · No Prophecies Guaranteed</footer>
+</div>
+
+<!-- MODALS -->
+<div class="mo" id="playerMo"><div class="modal" style="max-width:380px"><div class="modal-ey">Welcome</div><div class="modal-t">New Member</div><p class="modal-s">A new ghoul joins.</p><div class="fr"><label>Name</label><input type="text" id="newPlayerName" placeholder="e.g. Dave" autocomplete="off"/></div><div class="modal-a"><button class="btn btn-glow" id="savePlayerBtn" style="flex:2">Confirm</button><button class="btn" id="cancelPlayerBtn" style="flex:1">Cancel</button></div></div></div>
+
+<div class="mo" id="betMo"><div class="modal"><div class="modal-ey">Wager</div><div class="modal-t">Place Your Bet</div><p class="modal-s" id="betTarget">on —</p>
+<div class="bet-types">
+<button class="bet-type" data-bt="rank"><div class="bet-type-text"><strong>Rank</strong><small>Final position</small></div><div class="bet-type-mult">3×</div></button>
+<button class="bet-type" data-bt="date"><div class="bet-type-text"><strong>Date</strong><small>Year of departure</small></div><div class="bet-type-mult">5×</div></button>
+<button class="bet-type" data-bt="cause"><div class="bet-type-text"><strong>Cause</strong><small>Group votes</small></div><div class="bet-type-mult">10×</div></button>
+</div>
+<div class="bi" id="bi-rank"><label>Position</label><input type="number" id="betRank" min="1"/></div>
+<div class="bi" id="bi-date"><label>Year</label><input type="number" id="betYear" min="2026" max="2100"/></div>
+<div class="bi" id="bi-cause"><label>Cause</label><textarea id="betCause" rows="2"></textarea></div>
+<div class="sb"><label>Stake · Reaper Coins</label><input type="number" id="betStake" min="10" value="100"/></div>
+<div class="modal-a"><button class="btn btn-glow" id="placeBetBtn" style="flex:2">Lock It In</button><button class="btn" id="closeBetBtn" style="flex:1">Cancel</button></div>
+</div></div>
+
+<div class="mo" id="nickMo"><div class="modal" style="max-width:420px"><div class="modal-ey">Alias</div><div class="modal-t" id="nickMoT">Nicknames</div><p class="modal-s" id="nickMoS">Suggest or choose</p><div class="nick-list" id="nickList"></div><div class="nick-add"><input type="text" id="nickIn" placeholder="Suggest a nickname..." maxlength="30"/><button class="btn btn-glow" id="nickAddBtn" style="padding:.55rem .85rem">Add</button></div><div class="modal-a" style="margin-top:1rem"><button class="btn" id="nickCloseBtn" style="flex:1">Done</button></div></div></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Particles
+(function(){const c=document.getElementById('bgC'),x=c.getContext('2d');let w,h,ps=[];const N=45;function rs(){w=c.width=innerWidth;h=c.height=innerHeight}addEventListener('resize',rs);rs();class P{constructor(){this.r_()}r_(){this.x=Math.random()*w;this.y=Math.random()*h;this.vx=(Math.random()-.5)*.22;this.vy=(Math.random()-.5)*.22;this.r=Math.random()*1.3+.4;this.c=Math.random()>.5?'rgba(255,31,113,':'rgba(0,240,255,';this.a=Math.random()*.2+.05}u(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>w)this.vx*=-1;if(this.y<0||this.y>h)this.vy*=-1}d(){x.beginPath();x.arc(this.x,this.y,this.r,0,Math.PI*2);x.fillStyle=this.c+this.a+')';x.fill();x.beginPath();x.arc(this.x,this.y,this.r*3,0,Math.PI*2);x.fillStyle=this.c+(this.a*.2)+')';x.fill()}}for(let i=0;i<N;i++)ps.push(new P());function ln(){for(let i=0;i<ps.length;i++)for(let j=i+1;j<ps.length;j++){const dx=ps[i].x-ps[j].x,dy=ps[i].y-ps[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<120){x.beginPath();x.moveTo(ps[i].x,ps[i].y);x.lineTo(ps[j].x,ps[j].y);x.strokeStyle='rgba(255,31,113,'+(0.04*(1-d/120))+')';x.lineWidth=.4;x.stroke()}}}function an(){x.clearRect(0,0,w,h);ps.forEach(p=>{p.u();p.d()});ln();requestAnimationFrame(an)}an()})();
+
+// State
+const SC=1000;
+let S={cu:null,players:{},entries:[]};
+let aBI=null,aBT=null,nEI=null;
+
+async function sG(k){try{if(!window.storage)return null;const r=await window.storage.get(k);return r?.value||null}catch(e){return null}}
+async function sS(k,v){try{if(window.storage)await window.storage.set(k,v)}catch(e){}}
+async function load(){const r=await sG('dp4');if(r){try{const p=JSON.parse(r);if(p?.players&&p?.entries){S=p;return}}catch(e){}}seed();await save()}
+async function save(){await sS('dp4',JSON.stringify(S))}
+
+function seed(){
+  const friends=['Gav','Andy','Will','Miles','Jim','Rich'];
+  const causes=['Pickleball-related cardiac event','Fell asleep in a sauna','Tripped over his own ego','Eaten by a swan in Hyde Park','Challenged the wrong bloke at darts','Allergic reaction to a compliment'];
+  friends.forEach((name,i)=>{
+    const id='p_'+i;
+    S.players[id]={name,coins:SC,bets:[]};
+    S.entries.push({
+      id:'e_'+i, name, photo:'', bio:'', quote:'',
+      cause:causes[i], nicknames:[],
+      // votes: { playerId: { rank: N, year: YYYY } }
+      votes:{}
+    });
+  });
+  S.cu=null;
+}
+
+function ap(name){let h=0;for(let i=0;i<name.length;i++)h=(h*31+name.charCodeAt(i))>>>0;return`https://randomuser.me/api/portraits/${h%2===0?'men':'women'}/${h%99}.jpg`}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+// Calculate avg rank from votes
+function calcAvgRank(entry){
+  const vs=Object.values(entry.votes||{}).filter(v=>v.rank);
+  if(vs.length===0)return 999;
+  return vs.reduce((s,v)=>s+v.rank,0)/vs.length;
+}
+function calcAvgYear(entry){
+  const vs=Object.values(entry.votes||{}).filter(v=>v.year);
+  if(vs.length===0)return null;
+  return Math.round(vs.reduce((s,v)=>s+v.year,0)/vs.length);
+}
+function voteCount(entry){
+  return Object.keys(entry.votes||{}).length;
+}
+
+// Howto toggle
+document.getElementById('howtoTog').addEventListener('click',()=>document.getElementById('howto').classList.toggle('open'));
+
+// Tabs
+document.querySelectorAll('.nav-b').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    const v=tab.getAttribute('data-view');
+    document.querySelectorAll('.nav-b').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('view-'+v).classList.add('active');
+    if(v==='leaderboard')renderLB();
+    if(v==='profile')renderProfile();
+  });
+});
+
+// Users
+function renderUsers(){
+  const sel=document.getElementById('userSel');
+  sel.innerHTML='<option value="" disabled'+(S.cu?'':' selected')+'>— Select your name —</option>';
+  Object.entries(S.players).forEach(([id,p])=>{
+    const o=document.createElement('option');o.value=id;o.textContent=p.name;
+    if(id===S.cu)o.selected=true;sel.appendChild(o);
+  });
+  updateBal();
+  updateActiveDisplay();
+}
+
+document.getElementById('userSel').addEventListener('change',async e=>{
+  S.cu=e.target.value;
+  await save();
+  updateBal();
+  updateActiveDisplay();
+  renderReg();
+  renderProfile();
+});
+
+function updateBal(){
+  const p=S.cu?S.players[S.cu]:null;
+  document.getElementById('balance').textContent=p?p.coins.toLocaleString():'—';
+}
+
+function updateActiveDisplay(){
+  const el=document.getElementById('pbarActive');
+  if(!S.cu||!S.players[S.cu]){
+    el.innerHTML='<div class="pbar-active-none">Pick your name above to start editing & betting</div>';
+    return;
+  }
+  const p=S.players[S.cu];
+  const entry=S.entries.find(e=>e.name===p.name);
+  const img=entry?.photo||ap(p.name);
+  el.innerHTML=`
+    <div class="pbar-active-av"><img src="${esc(img)}" alt="" onerror="this.src='${esc(ap(p.name))}'"/></div>
+    <div>
+      <div class="pbar-active-name">Playing as ${esc(p.name)}</div>
+      <div class="pbar-active-msg">All edits and bets will be saved under your name</div>
+    </div>
+  `;
+}
+
+// Add player
+const pMo=document.getElementById('playerMo'),pIn=document.getElementById('newPlayerName');
+document.getElementById('addPlayerBtn').addEventListener('click',()=>{pIn.value='';pMo.classList.add('active');setTimeout(()=>pIn.focus(),100)});
+document.getElementById('cancelPlayerBtn').addEventListener('click',()=>pMo.classList.remove('active'));
+document.getElementById('savePlayerBtn').addEventListener('click',doAddPlayer);
+pIn.addEventListener('keydown',e=>{if(e.key==='Enter')doAddPlayer()});
+async function doAddPlayer(){
+  const name=pIn.value.trim();if(!name){showToast('Name required');return}
+  const id='p_'+Date.now();
+  S.players[id]={name,coins:SC,bets:[]};
+  S.entries.push({id:'e_'+Date.now(),name,photo:'',bio:'',quote:'',cause:'',nicknames:[],votes:{}});
+  S.cu=id;await save();renderUsers();renderReg();pMo.classList.remove('active');showToast(`${name} joined`);
+}
+
+// ===== REGISTER =====
+function renderReg(){
+  const tbody=document.getElementById('regBody');
+  // Sort by average rank
+  const sorted=[...S.entries].sort((a,b)=>calcAvgRank(a)-calcAvgRank(b));
+
+  if(sorted.length===0){tbody.innerHTML='<tr><td colspan="8" class="empty">No candidates yet.</td></tr>';return}
+
+  tbody.innerHTML=sorted.map((e,i)=>{
+    const img=e.photo||ap(e.name);
+    const avgRank=calcAvgRank(e);
+    const avgYear=calcAvgYear(e);
+    const vc=voteCount(e);
+    const bets=(e.bets||[]).length;
+    const pot=(e.bets||[]).reduce((s,b)=>s+b.stake,0);
+    const chosenNick=(e.nicknames||[]).find(n=>n.chosen);
+    const displayRank=avgRank<999?(avgRank%1===0?avgRank:avgRank.toFixed(1)):'—';
+
+    return`<tr data-id="${e.id}">
+      <td class="rank-c"><span class="rank-b">${i+1}</span></td>
+      <td><div class="name-c">
+        <div class="av"><img src="${esc(img)}" alt="${esc(e.name)}" loading="lazy" onerror="this.src='${esc(ap(e.name))}'"/></div>
+        <div class="nm-t">
+          <div class="nm-p">${esc(e.name)}</div>
+          <div class="nm-n" data-nick="${e.id}">${chosenNick?'aka '+esc(chosenNick.name):'+ nickname'}</div>
+          ${e.quote?`<div class="nm-q">"${esc(e.quote)}"</div>`:''}
+        </div>
+      </div></td>
+      <td class="dt-c">${avgYear||'—'}<span class="avg-label">${vc>0?'avg of '+vc+' vote'+(vc>1?'s':''):'no votes'}</span></td>
+      <td class="cs-c" title="${esc(e.cause||'')}">"${esc(e.cause||'TBD')}"</td>
+      <td class="vt-c">${vc}</td>
+      <td class="bt-c">${bets}</td>
+      <td class="pt-c">${pot>0?pot.toLocaleString():'—'}</td>
+      <td class="ac-c">
+        <button class="bet-b" data-bet="${e.id}">Bet</button>
+        <button data-del="${e.id}">×</button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  tbody.querySelectorAll('[data-bet]').forEach(b=>b.addEventListener('click',ev=>{ev.stopPropagation();openBetMo(b.getAttribute('data-bet'))}));
+  tbody.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',async ev=>{ev.stopPropagation();if(!confirm('Remove?'))return;S.entries=S.entries.filter(e=>e.id!==b.getAttribute('data-del'));await save();renderReg();showToast('Removed')}));
+  tbody.querySelectorAll('[data-nick]').forEach(el=>el.addEventListener('click',ev=>{ev.stopPropagation();openNickMo(el.getAttribute('data-nick'))}));
+}
+
+// ===== PROFILE + PREDICTIONS =====
+function updatePhotoPreview(){
+  const data=document.getElementById('profPhoto').value;
+  const img=document.getElementById('photoPreviewImg');
+  const preview=document.getElementById('photoPreview');
+  const overlay=document.getElementById('photoOverlay');
+  if(data){
+    img.src=data;
+    img.style.display='block';
+    preview.style.borderColor='var(--cyan)';
+    overlay.style.opacity='0';
+  } else if(S.cu && S.players[S.cu]){
+    img.src=ap(S.players[S.cu].name);
+    img.style.display='block';
+    preview.style.borderColor='var(--line)';
+    overlay.style.opacity='0';
+  } else {
+    img.style.display='none';
+    preview.style.borderColor='var(--line)';
+    overlay.style.opacity='1';
+  }
+}
+
+// Hover effect on photo preview
+document.getElementById('photoPreview').addEventListener('mouseenter',()=>{
+  document.getElementById('photoOverlay').style.opacity='1';
+});
+document.getElementById('photoPreview').addEventListener('mouseleave',()=>{
+  document.getElementById('photoOverlay').style.opacity='0';
+});
+
+// File input → read as data URL, resize, store
+document.getElementById('photoFile').addEventListener('change',function(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    // Resize to max 300px to keep storage small
+    const img=new Image();
+    img.onload=function(){
+      const max=300;
+      let w=img.width,h=img.height;
+      if(w>max||h>max){
+        if(w>h){h=Math.round(h*(max/w));w=max}
+        else{w=Math.round(w*(max/h));h=max}
+      }
+      const canvas=document.createElement('canvas');
+      canvas.width=w;canvas.height=h;
+      const ctx=canvas.getContext('2d');
+      ctx.drawImage(img,0,0,w,h);
+      const dataUrl=canvas.toDataURL('image/jpeg',0.8);
+      document.getElementById('profPhoto').value=dataUrl;
+      updatePhotoPreview();
+      showToast('Photo ready — tap Save Profile to keep it');
+    };
+    img.src=ev.target.result;
+  };
+  reader.readAsDataURL(file);
+  // Reset so same file can be re-selected
+  e.target.value='';
+});
+
+// Remove photo button
+document.getElementById('removePhotoBtn').addEventListener('click',function(){
+  document.getElementById('profPhoto').value='';
+  updatePhotoPreview();
+  showToast('Photo removed — tap Save Profile to confirm');
+});
+
+function renderProfile(){
+  if(!S.cu||!S.players[S.cu]){
+    document.getElementById('profName').value='';
+    document.getElementById('profPhoto').value='';
+    document.getElementById('profBio').value='';
+    document.getElementById('profQuote').value='';
+    document.getElementById('predRows').innerHTML='<div style="padding:1.5rem;color:var(--inks);font-style:italic;text-align:center">Select your name above to see your predictions.</div>';
+    updatePhotoPreview();
+    return;
+  }
+  const player=S.players[S.cu];
+  const myEntry=S.entries.find(e=>e.name===player.name);
+
+  if(myEntry){
+    document.getElementById('profName').value=myEntry.name;
+    document.getElementById('profPhoto').value=myEntry.photo||'';
+    document.getElementById('profBio').value=myEntry.bio||'';
+    document.getElementById('profQuote').value=myEntry.quote||'';
+  }
+  updatePhotoPreview();
+
+  // Predictions — show all entries except self
+  const others=S.entries.filter(e=>e.name!==player.name);
+  document.getElementById('predCount').textContent=others.length;
+  const rows=document.getElementById('predRows');
+
+  rows.innerHTML=others.map(e=>{
+    const img=e.photo||ap(e.name);
+    const myVote=(e.votes||{})[S.cu]||{};
+    const saved=myVote.rank||myVote.year;
+    return`<div class="pred-row" data-pred-id="${e.id}">
+      <input type="number" class="pred-rank-input" data-pred-rank="${e.id}" min="1" max="${others.length}" value="${myVote.rank||''}" placeholder="#"/>
+      <div class="pred-av"><img src="${esc(img)}" alt="" onerror="this.src='${esc(ap(e.name))}'"/></div>
+      <div class="pred-name">${esc(e.name)}</div>
+      <input type="number" class="pred-date-input" data-pred-year="${e.id}" min="2025" max="2100" value="${myVote.year||''}" placeholder="Year"/>
+      <div class="pred-status">${saved?'<span class="saved">✓</span>':'<span class="unsaved">—</span>'}</div>
+    </div>`;
+  }).join('');
+}
+
+document.getElementById('profSaveBtn').addEventListener('click',async()=>{
+  if(!S.cu){showToast('Select your name first');return}
+  const player=S.players[S.cu];
+  const myEntry=S.entries.find(e=>e.name===player.name);
+  if(!myEntry){showToast('Entry not found');return}
+
+  const newName=document.getElementById('profName').value.trim();
+  if(newName){
+    myEntry.name=newName;
+    player.name=newName;
+  }
+  myEntry.photo=document.getElementById('profPhoto').value.trim();
+  myEntry.bio=document.getElementById('profBio').value.trim();
+  myEntry.quote=document.getElementById('profQuote').value.trim();
+
+  await save();renderUsers();renderReg();renderProfile();showToast('Profile saved');
+});
+
+document.getElementById('predSaveBtn').addEventListener('click',async()=>{
+  const others=S.entries.filter(e=>e.name!==S.players[S.cu].name);
+  let count=0;
+  others.forEach(e=>{
+    const rankEl=document.querySelector(`[data-pred-rank="${e.id}"]`);
+    const yearEl=document.querySelector(`[data-pred-year="${e.id}"]`);
+    const rank=parseInt(rankEl?.value);
+    const year=parseInt(yearEl?.value);
+    if(!e.votes)e.votes={};
+    if(rank||year){
+      e.votes[S.cu]={rank:rank||null,year:year||null};
+      count++;
+    }
+  });
+  await save();renderReg();renderProfile();
+  showToast(`${count} prediction${count!==1?'s':''} saved`);
+});
+
+// ===== NICKNAME MODAL =====
+function openNickMo(id){
+  nEI=id;const e=S.entries.find(x=>x.id===id);if(!e)return;
+  if(!e.nicknames)e.nicknames=[];
+  document.getElementById('nickMoT').textContent=e.name+'\'s Nicknames';
+  document.getElementById('nickMoS').textContent='Suggest or choose for '+e.name;
+  document.getElementById('nickIn').value='';
+  renderNickList();
+  document.getElementById('nickMo').classList.add('active');
+}
+function renderNickList(){
+  const e=S.entries.find(x=>x.id===nEI);
+  const list=document.getElementById('nickList');
+  if(!e?.nicknames?.length){list.innerHTML='<div style="color:var(--muted);font-style:italic;padding:.4rem 0;font-size:.85rem">None yet. Suggest one below.</div>';return}
+  list.innerHTML=e.nicknames.map((n,i)=>`<div class="nick-opt ${n.chosen?'chosen':''}" data-ni="${i}"><span class="nick-opt-nm">${n.chosen?'✓ ':''}${esc(n.name)}</span><span class="nick-opt-by">by ${esc(n.suggestedBy)}</span></div>`).join('');
+  list.querySelectorAll('.nick-opt').forEach(el=>el.addEventListener('click',async()=>{
+    const idx=parseInt(el.getAttribute('data-ni'));
+    e.nicknames.forEach((n,j)=>n.chosen=(j===idx&&!n.chosen));
+    await save();renderNickList();renderReg();
+  }));
+}
+document.getElementById('nickAddBtn').addEventListener('click',addNick);
+document.getElementById('nickIn').addEventListener('keydown',e=>{if(e.key==='Enter')addNick()});
+async function addNick(){
+  const name=document.getElementById('nickIn').value.trim();if(!name){showToast('Enter nickname');return}
+  const e=S.entries.find(x=>x.id===nEI);if(!e)return;
+  if(!e.nicknames)e.nicknames=[];
+  e.nicknames.push({name,suggestedBy:S.players[S.cu].name,chosen:false});
+  await save();document.getElementById('nickIn').value='';renderNickList();showToast('Added');
+}
+document.getElementById('nickCloseBtn').addEventListener('click',()=>{document.getElementById('nickMo').classList.remove('active');nEI=null});
+
+// ===== BET MODAL =====
+function openBetMo(id){
+  if(!S.cu){showToast('Select your name first');return}
+  aBI=id;aBT=null;
+  const e=S.entries.find(x=>x.id===id);
+  document.getElementById('betTarget').textContent='on '+e.name;
+  document.querySelectorAll('.bet-type').forEach(b=>b.classList.remove('selected'));
+  document.querySelectorAll('#betMo .bi').forEach(g=>g.classList.remove('active'));
+  ['betRank','betYear','betCause'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('betStake').value='100';
+  document.getElementById('betMo').classList.add('active');
+}
+document.querySelectorAll('.bet-type').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    aBT=btn.getAttribute('data-bt');
+    document.querySelectorAll('.bet-type').forEach(b=>b.classList.remove('selected'));
+    btn.classList.add('selected');
+    ['rank','date','cause'].forEach(t=>document.getElementById('bi-'+t).classList.toggle('active',t===aBT));
+  });
+});
+document.getElementById('closeBetBtn').addEventListener('click',()=>document.getElementById('betMo').classList.remove('active'));
+document.getElementById('placeBetBtn').addEventListener('click',async()=>{
+  if(!aBT){showToast('Choose type');return}
+  const stake=parseInt(document.getElementById('betStake').value);
+  if(!stake||stake<10){showToast('Min 10');return}
+  const player=S.players[S.cu];
+  if(player.coins<stake){showToast('Not enough');return}
+  let pred=null,mult=0;
+  if(aBT==='rank'){pred=parseInt(document.getElementById('betRank').value);if(!pred){showToast('Enter rank');return}mult=3}
+  else if(aBT==='date'){pred=parseInt(document.getElementById('betYear').value);if(!pred){showToast('Enter year');return}mult=5}
+  else{pred=document.getElementById('betCause').value.trim();if(!pred){showToast('Describe cause');return}mult=10}
+  const entry=S.entries.find(e=>e.id===aBI);
+  const bet={id:'b_'+Date.now(),playerId:S.cu,playerName:player.name,type:aBT,prediction:pred,stake,multiplier:mult,placedAt:new Date().toISOString()};
+  if(!entry.bets)entry.bets=[];entry.bets.push(bet);
+  player.coins-=stake;if(!player.bets)player.bets=[];
+  player.bets.push({...bet,entryId:entry.id,entryName:entry.name});
+  await save();document.getElementById('betMo').classList.remove('active');
+  updateBal();renderReg();showToast(`${stake} on ${entry.name}`);
+});
+
+// ===== LEADERBOARD =====
+function renderLB(){
+  const list=document.getElementById('lbList');
+  const players=Object.entries(S.players).map(([id,p])=>({id,...p,totalStaked:(p.bets||[]).reduce((s,b)=>s+b.stake,0)})).sort((a,b)=>b.coins-a.coins);
+  if(!players.length){list.innerHTML='<div class="empty">No members yet.</div>';return}
+  const tags=['The Leader','In Pursuit','Holding Steady','In the Mix','Long Odds','Dreaming'];
+  list.innerHTML=players.map((p,i)=>`<div class="lb-r">
+    <div class="lb-rk">${String(i+1).padStart(2,'0')}</div>
+    <div><span class="lb-nm">${esc(p.name)}</span>${i<tags.length?`<span class="lb-tg">${tags[i]}</span>`:''}<div class="lb-st">${(p.bets||[]).length} wager${(p.bets||[]).length!==1?'s':''} · ${p.totalStaked.toLocaleString()} staked</div></div>
+    <div class="lb-co">${p.coins.toLocaleString()}</div>
+  </div>`).join('');
+}
+
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
+
+(async function(){await load();renderUsers();renderReg()})();
+</script>
+</body>
+</html>
